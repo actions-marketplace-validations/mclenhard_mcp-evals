@@ -1,4 +1,4 @@
-# MCP Tool Call Evaluator
+# MCP Evals
 
 A Node.js package and GitHub Action for evaluating MCP (Model Context Protocol) tool implementations using LLM-based scoring. This helps ensure your MCP server's tools are working correctly and performing well.
 
