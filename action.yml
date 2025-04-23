@@ -1,0 +1,39 @@
+name: 'MCP Tool Evaluator'
+description: 'Run MCP tool evaluations and post results to PR comments'
+author: 'Matthew Lenhard'
+branding:
+  icon: 'check-circle'
+  color: 'green'
+
+inputs:
+  evals_path:
+    description: 'Path to the evals file'
+    required: true
+    default: 'evals.ts'
+  openai_api_key:
+    description: 'OpenAI API key'
+    required: true
+  model:
+    description: 'Model to use for evaluation'
+    required: false
+    default: 'gpt-4'
+  timeout:
+    description: 'Timeout in milliseconds for each tool call'
+    required: false
+    default: '5000'
+  server_path:
+    description: 'Path to the MCP server code (relative to repository root)'
+    required: false
+    default: '.'
+
+outputs:
+  results:
+    description: 'JSON string containing evaluation results'
+  score:
+    description: 'Overall score from 0-100'
+  evaluation_summary:
+    description: 'Detailed evaluation summary from the LLM'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js' 
