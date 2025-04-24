@@ -33,12 +33,13 @@ jobs:
           node-version: '20'
           
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         
       - name: Run MCP Evaluations
-        uses: matthewlenhard/mcp-evals@v1
+        uses: mclenhard/mcp-evals@v1.0.1
         with:
-          evals_path: 'path/to/your/evals.ts'
+          evals_path: 'src/evals/evals.ts'
+          server_path: 'src/index.ts'
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
           model: 'gpt-4'  # Optional, defaults to gpt-4
 ```
