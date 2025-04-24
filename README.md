@@ -16,14 +16,15 @@ Add the following to your workflow file:
 
 ```yaml
 name: Run MCP Evaluations
-
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-
 jobs:
   evaluate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       
@@ -36,7 +37,7 @@ jobs:
         run: npm install
         
       - name: Run MCP Evaluations
-        uses: mclenhard/mcp-evals@v1.0.1
+        uses: mclenhard/mcp-evals@v1.0.9
         with:
           evals_path: 'src/evals/evals.ts'
           server_path: 'src/index.ts'
