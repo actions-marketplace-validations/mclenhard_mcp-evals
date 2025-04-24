@@ -47,6 +47,8 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
+    - run: npm install mcp-evals@latest
+      shell: bash
     - run: npx mcp-evals ${{ inputs.evals_path }} ${{ inputs.server_path }}
       shell: bash
       env:
