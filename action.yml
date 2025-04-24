@@ -42,6 +42,8 @@ outputs:
 
 runs:
   using: 'composite'
+  permissions:
+    pull-requests: write
   steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -61,8 +63,6 @@ runs:
         MODEL: ${{ inputs.model }}
         TIMEOUT: ${{ inputs.timeout }}
     - uses: actions/github-script@v7
-      permissions:
-        pull-requests: write
       with:
         script: |
           const results = `${{ steps.run-evals.outputs.results }}`;
