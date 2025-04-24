@@ -6,14 +6,14 @@ import {
   type LanguageModel,
 } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { EvalConfig } from './types';
+import { EvalConfig } from './types.js';
 
 const defaultModel = openai("gpt-4o");
 
-export async function runEvals(model: LanguageModel=defaultModel, prompt: string) {
+export async function runEvals(model: LanguageModel=defaultModel, prompt: string,serverPath: string) {
   const transport = new Experimental_StdioMCPTransport({
     command: "tsx",
-    args: ["./example-server/index.ts"]
+    args: [serverPath]
   });
 
   const client = await experimental_createMCPClient({
@@ -51,7 +51,12 @@ export async function runEvals(model: LanguageModel=defaultModel, prompt: string
 }
 
 export async function grade(model: LanguageModel=defaultModel, prompt: string) {
-  const result = await runEvals(model, prompt);
+  const serverPath = process.argv[3]; // Get server path from CLI args
+  if (!serverPath) {
+    throw new Error('Server path not provided');
+  }
+  
+  const result = await runEvals(model, prompt, serverPath);
   const evalSystemPromt = `You are an expert evaluator assessing how well an LLM answers a given question. Review the provided answer and score it from 1 to 5 in each of the following categories:
         Accuracy – Does the answer contain factual errors or hallucinations?
         Completeness – Does the answer fully address all parts of the question?
@@ -87,14 +92,14 @@ export async function grade(model: LanguageModel=defaultModel, prompt: string) {
     return await evalResult.text;
 }
 
-export async function runAllEvals(config: EvalConfig) {
+export async function runAllEvals(config: EvalConfig, serverPath: string) {
   const results = new Map<string, any>();
   let transport;
   
   try {
     transport = new Experimental_StdioMCPTransport({
       command: "tsx",
-      args: ["./example-server/index.ts"]
+      args: [serverPath]
     });
 
     const client = await experimental_createMCPClient({
@@ -122,4 +127,4 @@ export async function runAllEvals(config: EvalConfig) {
 }
 
 // Export everything needed by consumers
-export * from './types';
+export * from './types.js';

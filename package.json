@@ -1,15 +1,30 @@
 {
   "name": "mcp-evals",
-  "version": "1.0.0",
+  "version": "1.0.13",
   "description": "GitHub Action for evaluating MCP server tool calls using LLM-based scoring",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts.map"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "bin": {
     "mcp-eval": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc -b",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "build": "npm run clean && tsc && chmod +x dist/cli.js",
     "dev": "tsc -w",
+    "test": "bin/mcp-eval",
     "eval": "tsx src/cli.ts",
     "lint": "eslint src/**/*.ts"
   },

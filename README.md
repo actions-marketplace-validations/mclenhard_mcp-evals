@@ -7,7 +7,7 @@ A Node.js package and GitHub Action for evaluating MCP (Model Context Protocol) 
 ### As a Node.js Package
 
 ```bash
-npm install @matthewlenhard/mcp-evals
+npm install mcp-evals
 ```
 
 ### As a GitHub Action
@@ -47,33 +47,33 @@ jobs:
 
 ### 1. Create Your Evaluation File
 
+
 Create a file (e.g., `evals.ts`) that exports your evaluation configuration:
 
 ```typescript
-import { EvalConfig } from '@matthewlenhard/mcp-evals';
+import { EvalConfig } from 'mcp-evals';
 import { openai } from "@ai-sdk/openai";
-import * as dotenv from 'dotenv';
+import { grade, EvalFunction} from "mcp-evals";
 
-// Load environment variables
-dotenv.config();
-
-// Define your evaluation function
-const myToolEval = {
-  name: 'My Tool Evaluation',
-  description: 'Evaluates the accuracy and completeness of my tool',
-  run: async (model) => {
-    const result = await grade(model, "What is the result of using my tool?");
-    return JSON.parse(result);
-  }
+const weatherEval: EvalFunction = {
+    name: 'Weather Tool Evaluation',
+    description: 'Evaluates the accuracy and completeness of weather information retrieval',
+    run: async () => {
+      const result = await grade(openai("gpt-4"), "What is the weather in New York?");
+      return JSON.parse(result);
+    }
 };
-
-// Export the configuration
 const config: EvalConfig = {
-  model: openai("gpt-4"),
-  evals: [myToolEval]
-};
-
-export default config;
+    model: openai("gpt-4"),
+    evals: [weatherEval]
+  };
+  
+  export default config;
+  
+  export const evals = [
+    weatherEval,
+    // add other evals here
+]; 
 ```
 
 ### 2. Run the Evaluations
@@ -83,22 +83,7 @@ export default config;
 You can run the evaluations using the CLI:
 
 ```bash
-npx mcp-eval path/to/your/evals.ts
-```
-
-Or programmatically:
-
-```typescript
-import { runAllEvals } from '@matthewlenhard/mcp-evals';
-import config from './path/to/your/evals';
-
-const results = await runAllEvals(config);
-
-// Process the results
-for (const [name, result] of results.entries()) {
-  console.log(`\n${name}:`);
-  console.log(JSON.stringify(result, null, 2));
-}
+npx mcp-eval path/to/your/evals.ts path/to/your/server.ts
 ```
 
 #### As a GitHub Action
@@ -121,28 +106,6 @@ interface EvalResult {
   reasoning: number;       // Score from 1-5
   overall_comments: string; // Summary of strengths and weaknesses
 }
-```
-
-## Example Server
-
-The package includes an example server that demonstrates how to implement and evaluate MCP tools. The example server includes:
-
-1. A simple addition tool
-2. A dynamic greeting resource
-3. A weather tool evaluation
-
-To run the example server:
-
-```bash
-# Clone the repository
-git clone https://github.com/matthewlenhard/mcp-evals.git
-cd mcp-evals
-
-# Install dependencies
-npm install
-
-# Run the example evaluations
-npm run eval example-server/evals/evals.ts
 ```
 
 ## Configuration
