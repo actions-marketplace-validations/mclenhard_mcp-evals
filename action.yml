@@ -47,7 +47,7 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-    - run: node dist/cli.js ${{ inputs.evals_path }} ${{ inputs.server_path }}
+    - run: node ${{ github.action_path }}/dist/cli.js ${{ inputs.evals_path }} ${{ inputs.server_path }}
       shell: bash
       env:
         OPENAI_API_KEY: ${{ inputs.openai_api_key }}
