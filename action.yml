@@ -27,13 +27,29 @@ inputs:
     default: '.'
 
 outputs:
-  results:
-    description: 'JSON string containing evaluation results'
-  score:
-    description: 'Overall score from 0-100'
-  evaluation_summary:
-    description: 'Detailed evaluation summary from the LLM'
+  accuracy:
+    description: 'Accuracy score from 0-100'
+  completeness:
+    description: 'Completeness score from 0-100'
+  relevance:
+    description: 'Relevance score from 0-100'
+  clarity:
+    description: 'Clarity score from 0-100'
+  reasoning:
+    description: 'Reasoning score from 0-100'
+  overall_comments:
+    description: 'Detailed comments about the evaluation'
 
 runs:
-  using: 'node20'
-  main: 'dist/index.js' 
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - run: node dist/cli.js ${{ inputs.evals_path }} ${{ inputs.server_path }}
+      shell: bash
+      env:
+        OPENAI_API_KEY: ${{ inputs.openai_api_key }}
+        MODEL: ${{ inputs.model }}
+        TIMEOUT: ${{ inputs.timeout }} 
