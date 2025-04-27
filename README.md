@@ -116,6 +116,9 @@ interface EvalResult {
 
 - `OPENAI_API_KEY`: Your OpenAI API key (required)
 
+> [!NOTE]
+> If you're using this GitHub Action with open source software, enable data sharing in the OpenAI billing dashboard to claim 2.5 million free GPT-4o mini tokens per day, making this Action effectively free to use.
+
 ### Evaluation Configuration
 
 The `EvalConfig` interface requires:
