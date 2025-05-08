@@ -7,13 +7,13 @@ import {
 } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { EvalConfig } from './types.js';
-
 const defaultModel = openai("gpt-4o");
 
 export async function runEvals(model: LanguageModel=defaultModel, prompt: string,serverPath: string) {
   const transport = new Experimental_StdioMCPTransport({
     command: "tsx",
-    args: [serverPath]
+    args: [serverPath],
+    env: Object.fromEntries(Object.entries(process.env).filter(([_, v]) => v !== undefined)) as Record<string, string>  
   });
 
   const client = await experimental_createMCPClient({
@@ -128,3 +128,5 @@ export async function runAllEvals(config: EvalConfig, serverPath: string) {
 
 // Export everything needed by consumers
 export * from './types.js';
+export { metrics } from './metrics.js';
+export type { MetricsConfig } from './metrics.js';

@@ -1,6 +1,6 @@
 {
   "name": "mcp-evals",
-  "version": "1.0.16",
+  "version": "1.0.18",
   "description": "GitHub Action for evaluating MCP server tool calls using LLM-based scoring",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -43,19 +43,28 @@
   "bugs": {
     "url": "https://github.com/mclenhard/mcp-evals/issues"
   },
-  "homepage": "https://github.com/mclenhard/mcp-evals#readme",
+  "homepage": "https://www.mcpevals.io/",
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@ai-sdk/openai": "^1.3.17",
     "@anthropic-ai/sdk": "^0.8.0",
-    "@modelcontextprotocol/sdk": "^1.10.2",
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.200.0",
+    "@opentelemetry/resources": "^2.0.0",
+    "@opentelemetry/sdk-node": "^0.200.0",
+    "@opentelemetry/sdk-trace-base": "^2.0.0",
+    "@opentelemetry/semantic-conventions": "^1.33.0",
     "ai": "^4.3.9",
     "chalk": "^4.1.2",
     "dotenv": "^16.3.1",
+    "express": "^5.1.0",
     "openai": "^4.24.1",
+    "prom-client": "^15.1.3",
     "tsx": "^4.19.3"
   },
   "devDependencies": {
+    "@types/express": "^5.0.1",
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",

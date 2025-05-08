@@ -1,2 +1,5 @@
-example-server
 .env
+.github
+example-server
+.package-lock.json
+tsconfig.tsbuildinfo
