@@ -1,6 +1,6 @@
 # MCP Evals
 
-A Node.js package and GitHub Action for evaluating MCP (Model Context Protocol) tool implementations using LLM-based scoring. This helps ensure your MCP server's tools are working correctly and performing well.
+A Node.js package and GitHub Action for evaluating MCP (Model Context Protocol) tool implementations using LLM-based scoring, **with built-in observability support**. This helps ensure your MCP server's tools are working correctly, performing well, and are fully observable with integrated monitoring and metrics.
 
 ## Installation
 
@@ -45,7 +45,7 @@ jobs:
           model: 'gpt-4'  # Optional, defaults to gpt-4
 ```
 
-## Usage
+## Usage -- Evals
 
 ### 1. Create Your Evaluation File
 
@@ -128,6 +128,38 @@ Each evaluation function must implement:
 - `name`: Name of the evaluation
 - `description`: Description of what the evaluation tests
 - `run`: Async function that takes a model and returns an `EvalResult`
+
+## Usage -- Monitoring
+
+> **Note:** The metrics functionality is still in alpha. Features and APIs may change, and breaking changes are possible.
+
+1. Add the following to your application before you initilize the MCP server. 
+
+```typescript 
+import { metrics } from 'mcp-evals';
+metrics.initialize(9090, { enableTracing: true, otelEndpoint: 'http://localhost:4318/v1/traces' });
+```
+
+2. Start the monitoring stack:
+
+```bash
+docker-compose up -d
+```
+
+3. Run your MCP server and it will automatically connect to the monitoring stack.
+
+### Accessing the Dashboards
+
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3000 (username: admin, password: admin)
+- **Jaeger UI**: http://localhost:16686
+
+## Metrics Available
+
+- **Tool Calls**: Number of tool calls by tool name
+- **Tool Errors**: Number of errors by tool name
+- **Tool Latency**: Distribution of latency times by tool name
+
 
 ## License
 
