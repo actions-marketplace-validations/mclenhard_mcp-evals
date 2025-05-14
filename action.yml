@@ -63,8 +63,25 @@ runs:
     - uses: actions/github-script@v7
       with:
         script: |
-          const results = `${{ steps.run-evals.outputs.results }}`;
-          const body = `## MCP Tool Evaluation Results\n\n${results}`;
+          const results = JSON.parse(`${{ steps.run-evals.outputs.results }}`);
+          
+          // Create table headers
+          let table = '| Metric | Score | Comments |\n| ------ | ----- | -------- |\n';
+          
+          // Add scores to table
+          table += `| Accuracy | ${results.accuracy} | ${results.accuracy_comments || '-'} |\n`;
+          table += `| Completeness | ${results.completeness} | ${results.completeness_comments || '-'} |\n`;
+          table += `| Relevance | ${results.relevance} | ${results.relevance_comments || '-'} |\n`;
+          table += `| Clarity | ${results.clarity} | ${results.clarity_comments || '-'} |\n`;
+          table += `| Reasoning | ${results.reasoning} | ${results.reasoning_comments || '-'} |\n`;
+          
+          // Add overall comments if they exist
+          let body = `## MCP Tool Evaluation Results\n\n${table}`;
+          
+          if (results.overall_comments) {
+            body += `\n\n### Overall Comments\n\n${results.overall_comments}`;
+          }
+          
           await github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
