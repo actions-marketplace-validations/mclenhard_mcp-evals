@@ -47,18 +47,13 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-    - run: npm install mcp-evals
+    - run: npm install mcp-evals@latest
       shell: bash
     - id: run-evals
       run: |
-        # Run evaluations and output the results
-        npx mcp-evals ${{ inputs.evals_path }} ${{ inputs.server_path }} > eval_output.txt
-        
-        # Extract all JSON objects from output
-        grep -Pzo '(?s)\{[^{]*"accuracy"[^}]*\}' eval_output.txt > eval_results.json
-        
+        results=$(npx mcp-evals ${{ inputs.evals_path }} ${{ inputs.server_path }})
         echo "results<<EOF" >> $GITHUB_OUTPUT
-        cat eval_results.json >> $GITHUB_OUTPUT
+        echo "$results" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
       shell: bash
       env:
@@ -68,44 +63,8 @@ runs:
     - uses: actions/github-script@v7
       with:
         script: |
-          const resultsText = `${{ steps.run-evals.outputs.results }}`;
-          // Split by newlines to get individual JSON objects
-          const resultsArray = resultsText.split('\n').filter(line => line.trim());
-          
-          let body = '## MCP Tool Evaluation Results\n\n';
-          
-          // Process each result
-          for (let i = 0; i < resultsArray.length; i++) {
-            try {
-              const results = JSON.parse(resultsArray[i]);
-              
-              // Get eval name if available, or use generic name
-              const evalName = results.name || `Evaluation ${i+1}`;
-              body += `### ${evalName}\n\n`;
-              
-              // Create table headers
-              let table = '| Metric | Score | Comments |\n| ------ | ----- | -------- |\n';
-              
-              // Add scores to table
-              table += `| Accuracy | ${results.accuracy} | ${results.accuracy_comments || '-'} |\n`;
-              table += `| Completeness | ${results.completeness} | ${results.completeness_comments || '-'} |\n`;
-              table += `| Relevance | ${results.relevance} | ${results.relevance_comments || '-'} |\n`;
-              table += `| Clarity | ${results.clarity} | ${results.clarity_comments || '-'} |\n`;
-              table += `| Reasoning | ${results.reasoning} | ${results.reasoning_comments || '-'} |\n`;
-              
-              body += table;
-              
-              // Add overall comments if they exist
-              if (results.overall_comments) {
-                body += `\n#### Overall Comments\n\n${results.overall_comments}\n\n`;
-              }
-              
-            } catch (error) {
-              console.error(`Error parsing result ${i}: ${error.message}`);
-              body += `\n### Error parsing evaluation ${i+1}\n\n`;
-            }
-          }
-          
+          const results = `${{ steps.run-evals.outputs.results }}`;
+          const body = `## MCP Tool Evaluation Results\n\n${results}`;
           await github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
