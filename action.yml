@@ -47,7 +47,7 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-    - run: npm install mcp-evals@latest
+    - run: npm install mcp-evals
       shell: bash
     - id: run-evals
       run: |
