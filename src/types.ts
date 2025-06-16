@@ -18,4 +18,22 @@ export interface EvalFunction {
 export interface EvalConfig {
   model: LanguageModel;
   evals: EvalFunction[];
+}
+
+export interface YamlModelConfig {
+  provider: 'openai' | 'anthropic';
+  name: string;
+  api_key?: string;
+}
+
+export interface YamlEval {
+  name: string;
+  description: string;
+  prompt: string;
+  expected_result?: string;
+}
+
+export interface YamlEvalConfig {
+  model?: YamlModelConfig;
+  evals: YamlEval[];
 } 

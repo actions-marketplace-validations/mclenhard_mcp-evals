@@ -50,13 +50,13 @@ export async function runEvals(model: LanguageModel=defaultModel, prompt: string
   }
 }
 
-export async function grade(model: LanguageModel=defaultModel, prompt: string) {
-  const serverPath = process.argv[3]; // Get server path from CLI args
-  if (!serverPath) {
+export async function grade(model: LanguageModel=defaultModel, prompt: string, serverPath?: string) {
+  const finalServerPath = serverPath || process.argv[3]; // Use provided serverPath or CLI args
+  if (!finalServerPath) {
     throw new Error('Server path not provided');
   }
   
-  const result = await runEvals(model, prompt, serverPath);
+  const result = await runEvals(model, prompt, finalServerPath);
   const evalSystemPromt = `You are an expert evaluator assessing how well an LLM answers a given question. Review the provided answer and score it from 1 to 5 in each of the following categories:
         Accuracy – Does the answer contain factual errors or hallucinations?
         Completeness – Does the answer fully address all parts of the question?
