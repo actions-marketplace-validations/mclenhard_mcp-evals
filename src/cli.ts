@@ -2,6 +2,7 @@
 import { runAllEvals } from './index.js';
 import * as dotenv from 'dotenv';
 import { EvalConfig } from './types.js';
+import { loadYamlEvalConfig } from './yaml-loader.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
@@ -20,11 +21,13 @@ async function main() {
   if (!userEvalsPath) {
     console.error('Please provide a path to your evals file');
     console.error('Usage: npx mcp-eval <evals-path> <server-path>');
+    console.error('       <evals-path> can be a .ts/.js or .yaml/.yml file');
     process.exit(1);
   }
   if (!userServerPath) {
     console.error('Please provide a path to your server file');
     console.error('Usage: npx mcp-eval <evals-path> <server-path>');
+    console.error('       <evals-path> can be a .ts/.js or .yaml/.yml file');
     process.exit(1);
   }
 
@@ -35,13 +38,23 @@ async function main() {
   console.log('Using server file:', absoluteServerPath);
 
   try {
-    // Import the TypeScript file 
-    const module = await import(absoluteEvalsPath);
-    const config: EvalConfig = module.default;
+    let config: EvalConfig;
+    
+    // Check file extension to determine how to load the config
+    const fileExtension = path.extname(absoluteEvalsPath).toLowerCase();
+    
+    if (fileExtension === '.yaml' || fileExtension === '.yml') {
+      // Load YAML configuration
+      config = loadYamlEvalConfig(absoluteEvalsPath, absoluteServerPath);
+    } else {
+      // Import the TypeScript/JavaScript file 
+      const module = await import(absoluteEvalsPath);
+      config = module.default;
 
-    if (!config || !config.evals) {
-      console.error('Invalid config: must export a default config with evals array');
-      process.exit(1);
+      if (!config || !config.evals) {
+        console.error('Invalid config: must export a default config with evals array');
+        process.exit(1);
+      }
     }
 
     console.log('Running all evaluations...\n');
