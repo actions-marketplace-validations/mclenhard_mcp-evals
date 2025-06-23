@@ -24,7 +24,11 @@
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "build": "npm run clean && tsc && chmod +x dist/cli.js",
     "dev": "tsc -w",
-    "test": "bin/mcp-eval",
+    "test": "jest --config jest.config.cjs",
+    "test:unit": "jest --config jest.config.cjs --testPathPattern=unit",
+    "test:integration": "jest --config jest.config.cjs --testPathPattern=integration",
+    "test:watch": "jest --config jest.config.cjs --watch",
+    "test:coverage": "jest --config jest.config.cjs --coverage",
     "eval": "tsx src/cli.ts",
     "lint": "eslint src/**/*.ts"
   },
@@ -68,6 +72,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
