@@ -4,11 +4,9 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2023"],
-    "module": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "preserveWatchOutput": true,
-
-    /* Bundler mode */
-    "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "allowImportingTsExtensions": false,
